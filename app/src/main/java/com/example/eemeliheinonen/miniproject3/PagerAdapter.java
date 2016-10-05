@@ -22,7 +22,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return MainFragment.newInstance("Eka fragmentti");
             case 1:
-                return SettingsFragment.newInstance("Toka fragmentti");
+                return MainFragment.newInstance("Toka fragmentti");
         }
         return null;
     }
