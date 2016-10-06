@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class MainFragment extends Fragment {
     private static final String ARG_PARAM1 = "txt";
     private String dTxt;
+    private TextView tv1;
 
     public static MainFragment newInstance(String dogTxt) {
         MainFragment fragment = new MainFragment();
@@ -31,12 +32,12 @@ public class MainFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LinearLayout myView =(LinearLayout) inflater.inflate(R.layout.fragment_main, container, false);
-        TextView tv1 = (TextView) myView.findViewById(R.id.tv1);
+        tv1 = (TextView) myView.findViewById(R.id.tv1);
         tv1.setText(dTxt);
         return myView;
     }
-
-
-
+    public void setText(String s){
+        tv1.setText(s);
+    }
 }
 

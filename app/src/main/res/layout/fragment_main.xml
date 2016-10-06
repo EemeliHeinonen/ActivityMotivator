@@ -8,5 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Tässä textview"/>
+    <TextView android:id="@+id/tv2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tässä textview2"/>
+    <TextView android:id="@+id/tv3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tässä textview3"/>
 
 </LinearLayout>
