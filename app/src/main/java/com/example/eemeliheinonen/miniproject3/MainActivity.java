@@ -18,11 +18,16 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,12 +37,18 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private BluetoothAdapter mBluetoothAdapter;
     private int REQUEST_ENABLE_BT = 1;
     private Handler mHandler;
@@ -52,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
     private int format = BluetoothGattCharacteristic.FORMAT_UINT8;
     private BluetoothGattCharacteristic characteristic;
     private int heartRate;
+    private GoogleApiClient gac;
+    private Location loc;
+    private String TAG = "jeee";
+    private TextView tvC;
+    private TextView tvMotivation;
+    private LocationRequest locReq;
 
     private final static int UPDATE_DEVICE = 0;
     private final static int UPDATE_VALUE = 1;
@@ -59,20 +76,24 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             final int what = msg.what;
             final String value = (String) msg.obj;
-            switch(what) {
-                case UPDATE_DEVICE: updateDevice(value); break;
-                case UPDATE_VALUE: updateValue(value); break;
+            switch (what) {
+                case UPDATE_DEVICE:
+                    updateDevice(value);
+                    break;
+                case UPDATE_VALUE:
+                    updateValue(value);
+                    break;
             }
         }
     };
 
-    private void updateDevice(String devName){
-        TextView t=(TextView)findViewById(R.id.tv2);
+    private void updateDevice(String devName) {
+        TextView t = (TextView) findViewById(R.id.tv2);
         t.setText(devName);
     }
 
-    private void updateValue(String value){
-        TextView t=(TextView)findViewById(R.id.tv3);
+    private void updateValue(String value) {
+        TextView t = (TextView) findViewById(R.id.tv3);
         t.setText(value);
     }
 
@@ -89,6 +110,18 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.act_title);
         toolbar.inflateMenu(R.menu.menu);
 
+
+        gac = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        locReq = new LocationRequest();
+        locReq.setInterval(500);
+        locReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
         mHandler = new Handler();
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "BLE Not Supported",
@@ -101,8 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) { int id = item.getItemId();
-                return true; }
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                return true;
+            }
 
         });
 
@@ -159,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scanLeDevice(final boolean enable) {
-        Log.d("lol","scanledevice alkaa");
+        Log.d("lol", "scanledevice alkaa");
         if (enable) {
             mHandler.postDelayed(new Runnable() {
                 @Override
@@ -167,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT < 21) {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     } else {
-                        Log.d("lol","scanledevice stopscan");
+                        Log.d("lol", "scanledevice stopscan");
                         mLEScanner.stopScan(mScanCallback);
 
                     }
@@ -176,9 +211,9 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT < 21) {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
             } else {
-                Log.d("lol","ennen startscan");
+                Log.d("lol", "ennen startscan");
                 mLEScanner.startScan(filters, settings, mScanCallback);
-                Log.d("lol","jälkeen startscannin");
+                Log.d("lol", "jälkeen startscannin");
             }
         } else {
             if (Build.VERSION.SDK_INT < 21) {
@@ -196,10 +231,10 @@ public class MainActivity extends AppCompatActivity {
             Log.i("callbackType lol", String.valueOf(callbackType));
             Log.i("result lol", result.toString());
             BluetoothDevice btDevice = result.getDevice();
-            Log.d("lol","ennen connectdevice");
+            Log.d("lol", "ennen connectdevice");
             connectToDevice(btDevice);
-            Log.d("lol","jälkeen connectdevicen");
-            Log.d("lol",btDevice.toString());
+            Log.d("lol", "jälkeen connectdevicen");
+            Log.d("lol", btDevice.toString());
         }
 
         @Override
@@ -233,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
     public void connectToDevice(BluetoothDevice device) {
         if (mGatt == null) {
             mGatt = device.connectGatt(this, false, gattCallback);
-            Log.d("lol","connected, stop scan");
+            Log.d("lol", "connected, stop scan");
             scanLeDevice(false);// will stop after first device detection
         }
     }
@@ -278,12 +313,12 @@ public class MainActivity extends AppCompatActivity {
             for (BluetoothGattService service : services) {
                 Log.d("lollero", "for ennen if");
                 if (service.getUuid().toString().equals(polarinUUID)) {
-                    Log.d("lollero","uuid equald polarinuuid");
+                    Log.d("lollero", "uuid equald polarinuuid");
                     // Found heart rate service
                     //  gatt.readCharacteristic(service.getCharacteristic());
                     Log.d("tässä tulee hruuid", UUID.fromString(heartRateUUID).toString());
                     //gatt.readCharacteristic(service.getCharacteristic(UUID.fromString(heartRateUUID)));
-                    Log.d("lollero size",""+service.getCharacteristics().size());
+                    Log.d("lollero size", "" + service.getCharacteristics().size());
                     gatt.readCharacteristic(service.getCharacteristics().get(0));
                     characteristic = service.getCharacteristics().get(0);
                     mGatt.setCharacteristicNotification(characteristic, true);
@@ -301,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
             // Log.d("lollero 1", gatt.readCharacteristic(services.get(3).getCharacteristics());
             //Log.d("lol",services.get(3).getCharacteristics().get(0).getIntValue(-1, 1).toString());
         }
-
 
 
         @Override
@@ -322,8 +356,8 @@ public class MainActivity extends AppCompatActivity {
 // Characteristic notification
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             heartRate = characteristic.getIntValue(format, 1);
-            String hr = ""+heartRate;
-            Log.d("lollero notif",hr);
+            String hr = "" + heartRate;
+            Log.d("lollero notif", hr);
 
             //update UI
             Message msg = Message.obtain();
@@ -333,6 +367,77 @@ public class MainActivity extends AppCompatActivity {
             msg.sendToTarget();
         }
 
-
     };
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected: ");
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        loc = LocationServices.FusedLocationApi.getLastLocation(gac);
+        loc.getSpeed();
+        tvC = (TextView) findViewById(R.id.tvCoordinates);
+        tvC.setText("Latitude: " + loc.getLatitude() + "\nLongitude: " + loc.getLongitude() + "\nAccuracy: " + loc.getAccuracy());
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                gac, locReq, this);
+    }
+
+
+
+    @Override
+    public void onLocationChanged (Location location){
+        tvMotivation = (TextView)findViewById(R.id.tvMotivation);
+        //Log.d(TAG, "onLocationChanged: ");
+        float s = location.getSpeed();
+        int intSpeed = (int) (s*3.6);
+        Double loclat = location.getLatitude();
+        Double loclon = location.getLongitude();
+        Float locacc = location.getAccuracy();
+        TextView tv = (TextView)findViewById(R.id.tv4);
+        tv.setText(""+s);
+        tvC = (TextView)findViewById(R.id.tvCoordinates);
+        tvC.setText("Latitude: " + loclat + "\nLongitude: " + loclon+"\nAccuracy: " + locacc);
+        Log.d(TAG, String.valueOf(intSpeed + "  "+ heartRate));
+
+        if(intSpeed < 16 && intSpeed > 2 && heartRate < 90){
+            tvMotivation.setText("NOPEAMMIN!!");
+        }
+        else if(intSpeed <3 || intSpeed > 15){
+            tvMotivation.setText("et taida kävellä");
+        }
+        else {
+            tvMotivation.setText("hyvin menee");
+        }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: ");
+        gac.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop: ");
+        gac.disconnect();
+        super.onStop();
+    }
 }

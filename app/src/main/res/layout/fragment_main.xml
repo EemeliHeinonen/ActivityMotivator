@@ -16,5 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Tässä textview3"/>
+    <TextView android:id="@+id/tv4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tässä textview4"/>
+    <TextView android:id="@+id/tvCoordinates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tässä tvCoordinates"/>
+    <TextView android:id="@+id/tvMotivation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tässä tvMotivation"/>
+
 
 </LinearLayout>
