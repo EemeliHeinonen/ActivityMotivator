@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
         locReq = new LocationRequest();
-        locReq.setInterval(500);
+        locReq.setInterval(1000);
         locReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
@@ -395,21 +395,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged (Location location){
         tvMotivation = (TextView)findViewById(R.id.tvMotivation);
         //Log.d(TAG, "onLocationChanged: ");
+
+        String mode; //general mode (walking/training)
+        int walkingSpeedCount = 0; // how many seconds of continious walking
+        int intervalPulseCount = 0; // how many seconds of continious interval training
+        int startMotivatingAfter = 10; // how many seconds it takes to start sending motivational notifications when walking
+        boolean interval = false; // toggling interval mode
+        boolean walking = false; //toggling walking mode
+        int burstLenght = 180; // user set duration for interval burst
+        int runningPulseCount = 0; // how many seconds user has been continiusly running
+        int age = 26; // users age
+        int maxHr = 220-age; // calculated max HR
+        int walkingBeat_min = (int) (0.4* maxHr); // minimum HR for optimal walking
+        int zone1_min = (int) (0.5*maxHr); // min HR for zone1
+        int zone1_max = (int) (0.6*maxHr); // max HR for zone1
+        int burstHR_min = (int) (0.85*maxHr); // min HR for burst
+
         float s = location.getSpeed();
         int intSpeed = (int) (s*3.6);
         Double loclat = location.getLatitude();
         Double loclon = location.getLongitude();
         Float locacc = location.getAccuracy();
         TextView tv = (TextView)findViewById(R.id.tv4);
-        tv.setText(""+s);
+        tv.setText(""+intSpeed);
         tvC = (TextView)findViewById(R.id.tvCoordinates);
         tvC.setText("Latitude: " + loclat + "\nLongitude: " + loclon+"\nAccuracy: " + locacc);
         Log.d(TAG, String.valueOf(intSpeed + "  "+ heartRate));
 
-        if(intSpeed < 16 && intSpeed > 2 && heartRate < 90){
+        if(heartRate > burstHR_min){
+            intervalPulseCount++;
+            if(intervalPulseCount >= burstLenght){
+                intervalPulseCount = 0;
+            }
+        }
+
+
+        if(intSpeed < 16 && intSpeed > 2){
+            walking = true;
+        }
+        else{
+            walking = false;
+        }
+
+        if(walking){
+            walkingSpeedCount++;
+        }
+        else{
+            walkingSpeedCount = 0;
+        }
+
+
+        if(walking && heartRate < walkingBeat_min){
             tvMotivation.setText("NOPEAMMIN!!");
         }
-        else if(intSpeed <3 || intSpeed > 15){
+        else if(!walking){
             tvMotivation.setText("et taida kävellä");
         }
         else {
