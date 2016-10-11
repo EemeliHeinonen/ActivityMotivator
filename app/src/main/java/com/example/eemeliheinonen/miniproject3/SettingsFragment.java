@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,6 +46,42 @@ public class SettingsFragment extends Fragment {
         editAge = (EditText) myView.findViewById(R.id.etAge);
         editBurst = (EditText) myView.findViewById(R.id.etBurstLength);
         tv1.setText(dTxt);
+
+        editAge.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    //SAVE THE DATA
+                    ((MainActivity)getActivity()).setAge(Integer.parseInt(editAge.getText().toString()));
+                }
+            }
+        });
+
+        editBurst.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                    ((MainActivity)getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+        editBurst.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    //SAVE THE DATA
+                    ((MainActivity)getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
+                }
+            }
+        });
+
+
         return myView;
     }
 }
