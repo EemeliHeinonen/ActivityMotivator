@@ -70,6 +70,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView tvMotivation;
     private LocationRequest locReq;
 
+    String mode; //general mode (walking/training)
+    int walkingSpeedCount = 0; // how many seconds of continious walking
+    int intervalPulseCount = 0; // how many seconds of continious interval training
+    int startMotivatingAfter = 10; // how many seconds it takes to start sending motivational notifications when walking
+    boolean interval = false; // toggling interval mode
+    boolean walking = false; //toggling walking mode
+    int burstLenght = 180; // user set duration for interval burst
+    int runningPulseCount = 0; // how many seconds user has been continiusly running
+    int age = 26; // users age
+    int maxHr = 220-age; // calculated max HR
+    int walkingBeat_min = (int) (0.4* maxHr); // minimum HR for optimal walking
+    int zone1_min = (int) (0.5*maxHr); // min HR for zone1
+    int zone1_max = (int) (0.6*maxHr); // max HR for zone1
+    int burstHR_min = (int) (0.85*maxHr); // min HR for burst
+
     private final static int UPDATE_DEVICE = 0;
     private final static int UPDATE_VALUE = 1;
     private final Handler uiHandler = new Handler() {
@@ -396,21 +411,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         tvMotivation = (TextView)findViewById(R.id.tvMotivation);
         //Log.d(TAG, "onLocationChanged: ");
 
-        String mode; //general mode (walking/training)
-        int walkingSpeedCount = 0; // how many seconds of continious walking
-        int intervalPulseCount = 0; // how many seconds of continious interval training
-        int startMotivatingAfter = 10; // how many seconds it takes to start sending motivational notifications when walking
-        boolean interval = false; // toggling interval mode
-        boolean walking = false; //toggling walking mode
-        int burstLenght = 180; // user set duration for interval burst
-        int runningPulseCount = 0; // how many seconds user has been continiusly running
-        int age = 26; // users age
-        int maxHr = 220-age; // calculated max HR
-        int walkingBeat_min = (int) (0.4* maxHr); // minimum HR for optimal walking
-        int zone1_min = (int) (0.5*maxHr); // min HR for zone1
-        int zone1_max = (int) (0.6*maxHr); // max HR for zone1
-        int burstHR_min = (int) (0.85*maxHr); // min HR for burst
-
         float s = location.getSpeed();
         int intSpeed = (int) (s*3.6);
         Double loclat = location.getLatitude();
@@ -478,5 +478,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d(TAG, "onStop: ");
         gac.disconnect();
         super.onStop();
+    }
+
+    public void setAge(int i){
+        this.age = i;
+        Log.d(TAG, "setAge: "+age);
+    }
+
+    public void setBurstLenght(int i){
+        this.burstLenght = i;
     }
 }

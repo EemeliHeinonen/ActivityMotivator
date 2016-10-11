@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Miniproject3</string>
     <string name="act_title">Dem Beatz of da heart</string>
+    <string name="age">Age:</string>
+    <string name="burst_length">Burst length:</string>
 </resources>
