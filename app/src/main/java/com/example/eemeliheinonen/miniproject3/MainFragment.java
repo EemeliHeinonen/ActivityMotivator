@@ -50,12 +50,15 @@ public class MainFragment extends Fragment {
                 {
                     case R.id.radioFwalk:
                         Log.d(TAG, "onCheckedChanged: fwalk"+checkedId);
+                        ((MainActivity)getActivity()).setMainMode("walk");
                         break;
                     case R.id.radioIw:
                         Log.d(TAG, "onCheckedChanged: interval"+checkedId);
+                        ((MainActivity)getActivity()).setMainMode("interval");
                         break;
                     case R.id.radioFwork:
                         Log.d(TAG, "onCheckedChanged: free workout"+checkedId);
+                        ((MainActivity)getActivity()).setMainMode("free");
                         break;
                 }
             }

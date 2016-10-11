@@ -19,6 +19,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -70,22 +73,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String TAG = "jeee";
     private TextView tvC;
     private TextView tvMotivation;
-
     private LocationRequest locReq;
+    private String mainMode = "walk"; // walk or interval or free
 
 
 
     String mode; //general mode (walking/training)
     int walkingSpeedCount = 0; // how many seconds of continious walking
-    int intervalPulseCount = 0; // how many seconds of continious interval training
+    int intervalBurstCount = 0; // how many seconds of continious interval training
     int startMotivatingAfter = 10; // how many seconds it takes to start sending motivational notifications when walking
+    boolean initialResting = true;
+    boolean postInitialResting = false;
+    boolean freeWorkoutActive = false;
     boolean interval = false; // toggling interval mode
     boolean walking = false; //toggling walking mode
+    boolean running = false; // toggling free workout mode
     int burstLenght = 180; // user set duration for interval burst
+    int intervalRestCount = 0;
     int runningPulseCount = 0; // how many seconds user has been continiusly running
     int age = 26; // users age
     int maxHr = 220-age; // calculated max HR
     int walkingBeat_min = (int) (0.4* maxHr); // minimum HR for optimal walking
+    int runningBeat_min = (int) (0.7*maxHr);
     int zone1_min = (int) (0.5*maxHr); // min HR for zone1
     int zone1_max = (int) (0.6*maxHr); // max HR for zone1
     int burstHR_min = (int) (0.85*maxHr); // min HR for burst
@@ -127,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         TabLayout tabLayout = (TabLayout) findViewById(R.id.fixed_tabs);
         tabLayout.setupWithViewPager(viewPager);
         Log.d(TAG, "onCreate: ennen radiobuttongroup");
+        tvMotivation = (TextView)findViewById(R.id.tvmotiv);
 
 
         gac = new GoogleApiClient.Builder(this)
@@ -402,51 +412,92 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onLocationChanged (Location location){
-        //tvMotivation = (TextView)findViewById(R.id.tvMotivation);
-        //Log.d(TAG, "onLocationChanged: ");
-
+        Log.d(TAG, "onLocationChanged: ");
         float s = location.getSpeed();
         int intSpeed = (int) (s*3.6);
-        Double loclat = location.getLatitude();
-        Double loclon = location.getLongitude();
-        Float locacc = location.getAccuracy();
-        //TextView tv = (TextView)findViewById(R.id.tv4);
-        //tv.setText(""+intSpeed);
-        //tvC = (TextView)findViewById(R.id.tvCoordinates);
-        //tvC.setText("Latitude: " + loclat + "\nLongitude: " + loclon+"\nAccuracy: " + locacc);
         Log.d(TAG, String.valueOf(intSpeed + "  "+ heartRate));
 
-        if(heartRate > burstHR_min){
-            intervalPulseCount++;
-            if(intervalPulseCount >= burstLenght){
-                intervalPulseCount = 0;
+        if(mainMode == "walk"){
+            Log.d(TAG, "onLocationChanged: main mode on WALK");
+
+            if(intSpeed < 16 && intSpeed > 2){
+                walking = true;
             }
-        }
+            else{
+                walking = false;
+            }
+
+            if(walking){
+                walkingSpeedCount++;
+            }
+            else{
+                walkingSpeedCount = 0;
+            }
 
 
-        if(intSpeed < 16 && intSpeed > 2){
-            walking = true;
+            if(walking && heartRate < walkingBeat_min && walkingSpeedCount >= 10){
+                tvMotivation.setText("NOPEAMMIN!!");
+                try {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(!walking){
+                //tvMotivation.setText("et taida kävellä");
+            }
+            else {
+                tvMotivation.setText("Hyvin menee!");
+            }
+
+
         }
-        else{
-            walking = false;
+        else if(mainMode == "interval"){
+            Log.d(TAG, "onLocationChanged: main mode on INTERVAL");
+            
+            if(initialResting){
+                intervalRestCount++;
+                if(intervalRestCount==120){
+                    initialResting = false;
+                    beeb();
+                    intervalRestCount = 0;
+                }
+            }
+
+            else if(!initialResting && !postInitialResting){
+                intervalBurstCount++;
+                if(intervalBurstCount >= burstLenght){
+                    intervalBurstCount = 0;
+                    tvMotivation.setText("BURSTI OHI!!");
+                    beeb();
+                    postInitialResting = true;
+                }
+            }
+            else if(postInitialResting){
+                if(heartRate<= zone1_max){
+                    beeb();
+                    postInitialResting = false;
+                }
+            }
+
         }
 
-        if(walking){
-            walkingSpeedCount++;
-        }
-        else{
-            walkingSpeedCount = 0;
-        }
+        else if(mainMode == "free"){
+            Log.d(TAG, "onLocationChanged: main mode on FREE");
+            if(heartRate >= runningBeat_min){
+                freeWorkoutActive = true;
+            }
+            
+            if(heartRate < runningBeat_min && freeWorkoutActive){
+                tvMotivation.setText("NOPEAMMIN!!");
+                beeb();
+            }
 
-
-        if(walking && heartRate < walkingBeat_min){
-            //tvMotivation.setText("NOPEAMMIN!!");
-        }
-        else if(!walking){
-            //tvMotivation.setText("et taida kävellä");
-        }
-        else {
-            //tvMotivation.setText("hyvin menee");
+            else if(heartRate >= runningBeat_min){
+                tvMotivation.setText("hyvin menee");
+            }
         }
     }
 
@@ -482,6 +533,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void setBurstLenght(int i){
         this.burstLenght = i;
         Log.d(TAG, "setBurstLenght: "+this.burstLenght);
+    }
+
+    public void setMainMode(String s){
+        mainMode = s;
+    }
+    
+    public void beeb(){
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
