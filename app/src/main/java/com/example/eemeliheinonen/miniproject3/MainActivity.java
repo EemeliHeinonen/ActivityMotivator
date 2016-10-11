@@ -121,9 +121,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.fixed_tabs);
         tabLayout.setupWithViewPager(viewPager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.act_title);
-        toolbar.inflateMenu(R.menu.menu);
 
 
         gac = new GoogleApiClient.Builder(this)
@@ -146,15 +143,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                return true;
-            }
-
-        });
 
     }
 
