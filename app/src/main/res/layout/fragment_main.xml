@@ -1,35 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView android:id="@+id/tv1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tässä textview"/>
-    <TextView android:id="@+id/tv2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tässä textview2"/>
+
     <TextView android:id="@+id/tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorHeart"
+        android:textSize="100dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="100dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BPM"
+        android:layout_toRightOf="@id/tv3"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorHeart"
+        android:paddingTop="150dp"
+        />
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tässä textview3"/>
-    <TextView android:id="@+id/tv4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tässä textview4"/>
-    <TextView android:id="@+id/tvCoordinates"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tässä tvCoordinates"/>
-    <TextView android:id="@+id/tvMotivation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tässä tvMotivation"/>
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+        <!--
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Interval workout"
+            style="@style/Font"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Free workout"
+            style="@style/Font"
+            />
+            -->
 
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:paddingLeft="50dp"
+            android:id="@+id/radiobtnGroup"
+            >
 
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frisk walking"
+                android:id="@+id/radioFwalk"
+                style="@style/RadioTextWalk"
+                />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Interval workout"
+                android:id="@+id/radioIw"
+                style="@style/RadioTextInterval"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Free workout"
+                android:id="@+id/radioFwork"
+                style="@style/RadioTextFree"/>
 
+        </RadioGroup>
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -34,6 +34,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String TAG = "jeee";
     private TextView tvC;
     private TextView tvMotivation;
+
     private LocationRequest locReq;
+
+
 
     String mode; //general mode (walking/training)
     int walkingSpeedCount = 0; // how many seconds of continious walking
@@ -103,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     };
 
     private void updateDevice(String devName) {
-        TextView t = (TextView) findViewById(R.id.tv2);
-        t.setText(devName);
+        //TextView t = (TextView) findViewById(R.id.tv2);
+        //t.setText(devName);
     }
 
     private void updateValue(String value) {
@@ -121,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.fixed_tabs);
         tabLayout.setupWithViewPager(viewPager);
+        Log.d(TAG, "onCreate: ennen radiobuttongroup");
 
 
         gac = new GoogleApiClient.Builder(this)
@@ -143,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-
     }
 
     @Override
@@ -164,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
             scanLeDevice(true);
         }
+
     }
 
     @Override
@@ -380,8 +386,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         loc = LocationServices.FusedLocationApi.getLastLocation(gac);
         loc.getSpeed();
-        tvC = (TextView) findViewById(R.id.tvCoordinates);
-        tvC.setText("Latitude: " + loc.getLatitude() + "\nLongitude: " + loc.getLongitude() + "\nAccuracy: " + loc.getAccuracy());
+        //tvC = (TextView) findViewById(R.id.tvCoordinates);
+        //tvC.setText("Latitude: " + loc.getLatitude() + "\nLongitude: " + loc.getLongitude() + "\nAccuracy: " + loc.getAccuracy());
         startLocationUpdates();
     }
 
@@ -396,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onLocationChanged (Location location){
-        tvMotivation = (TextView)findViewById(R.id.tvMotivation);
+        //tvMotivation = (TextView)findViewById(R.id.tvMotivation);
         //Log.d(TAG, "onLocationChanged: ");
 
         float s = location.getSpeed();
@@ -404,10 +410,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Double loclat = location.getLatitude();
         Double loclon = location.getLongitude();
         Float locacc = location.getAccuracy();
-        TextView tv = (TextView)findViewById(R.id.tv4);
-        tv.setText(""+intSpeed);
-        tvC = (TextView)findViewById(R.id.tvCoordinates);
-        tvC.setText("Latitude: " + loclat + "\nLongitude: " + loclon+"\nAccuracy: " + locacc);
+        //TextView tv = (TextView)findViewById(R.id.tv4);
+        //tv.setText(""+intSpeed);
+        //tvC = (TextView)findViewById(R.id.tvCoordinates);
+        //tvC.setText("Latitude: " + loclat + "\nLongitude: " + loclon+"\nAccuracy: " + locacc);
         Log.d(TAG, String.valueOf(intSpeed + "  "+ heartRate));
 
         if(heartRate > burstHR_min){
@@ -434,13 +440,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         if(walking && heartRate < walkingBeat_min){
-            tvMotivation.setText("NOPEAMMIN!!");
+            //tvMotivation.setText("NOPEAMMIN!!");
         }
         else if(!walking){
-            tvMotivation.setText("et taida kävellä");
+            //tvMotivation.setText("et taida kävellä");
         }
         else {
-            tvMotivation.setText("hyvin menee");
+            //tvMotivation.setText("hyvin menee");
         }
     }
 
@@ -476,4 +482,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void setBurstLenght(int i){
         this.burstLenght = i;
     }
+
+
 }

@@ -7,6 +7,33 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
+    <style name="Font">
+        <item name="android:fontFamily">Roboto Regular</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+
+    </style>
+
+    <style name="RadioTextWalk">
+        <item name="android:fontFamily">Roboto Regular</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+
+    </style>
+    <style name="RadioTextInterval">
+        <item name="android:fontFamily">Roboto Regular</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorHeart</item>
+
+    </style>
+    <style name="RadioTextFree">
+        <item name="android:fontFamily">Roboto Regular</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+
+    </style>
+
 
 </resources>
