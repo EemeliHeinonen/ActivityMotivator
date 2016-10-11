@@ -36,8 +36,6 @@ public class MainFragment extends Fragment {
         tv1.setText(dTxt);
         return myView;
     }
-    public void setText(String s){
-        tv1.setText(s);
-    }
+
 }
 

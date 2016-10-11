@@ -18,6 +18,10 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -32,8 +36,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +55,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener/*, SensorEventListener*/ {
     private BluetoothAdapter mBluetoothAdapter;
     private int REQUEST_ENABLE_BT = 1;
     private Handler mHandler;
@@ -69,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView tvC;
     private TextView tvMotivation;
     private LocationRequest locReq;
+   //private SensorManager sm;
+    // private Sensor step;
 
     private final static int UPDATE_DEVICE = 0;
     private final static int UPDATE_VALUE = 1;
@@ -98,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,10 +116,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.fixed_tabs);
         tabLayout.setupWithViewPager(viewPager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.act_title);
-        toolbar.inflateMenu(R.menu.menu);
-
 
         gac = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -117,9 +123,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addApi(LocationServices.API)
                 .build();
 
-        locReq = new LocationRequest();
-        locReq.setInterval(1000);
-        locReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
         mHandler = new Handler();
@@ -132,16 +135,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                return true;
-            }
-
-        });
+        /*
+        sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        step = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        sm.registerListener(this, step, SensorManager.SENSOR_DELAY_NORMAL);
+*/
 
     }
+
+
+
 
     @Override
     protected void onResume() {
@@ -161,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
             scanLeDevice(true);
         }
+        locReq = new LocationRequest();
+        locReq.setInterval(1000);
+        locReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
     }
 
     @Override
@@ -479,4 +486,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         gac.disconnect();
         super.onStop();
     }
+/*
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        float steps = event.values[0];
+        Log.d(TAG, "onSensorChanged: "+steps);
+            //tvStepCount.setText(""+steps);
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }*/
+
 }
