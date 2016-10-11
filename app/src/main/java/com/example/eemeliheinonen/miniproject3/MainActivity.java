@@ -481,6 +481,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void setBurstLenght(int i){
         this.burstLenght = i;
+        Log.d(TAG, "setBurstLenght: "+this.burstLenght);
     }
 
 
