@@ -52,7 +52,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Frisk walking"
+                android:text="Walking"
                 android:id="@+id/radioFwalk"
                 style="@style/RadioTextWalk"
                 android:shadowColor="@color/text_shadow"

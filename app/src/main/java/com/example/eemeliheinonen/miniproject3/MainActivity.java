@@ -75,20 +75,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView tvMotivation;
     private LocationRequest locReq;
     private String mainMode = "walk"; // walk or interval or free
+    private Toast toastRest;
+    private Toast toastBurstStart;
+    private Toast toastWorkHarder;
 
 
 
     String mode; //general mode (walking/training)
+    private int intSpeed; //User's speed will be set to this.
     int walkingSpeedCount = 0; // how many seconds of continious walking
     int intervalBurstCount = 0; // how many seconds of continious interval training
     int startMotivatingAfter = 10; // how many seconds it takes to start sending motivational notifications when walking
+    int initialRestLength = 15;  // Sets the length of Interval workouts initial rest period in seconds.
     boolean initialResting = true;
     boolean postInitialResting = false;
     boolean freeWorkoutActive = false;
     boolean interval = false; // toggling interval mode
     boolean walking = false; //toggling walking mode
     boolean running = false; // toggling free workout mode
-    int burstLenght = 180; // user set duration for interval burst
+    int burstLenght = 30; // user set duration for interval burst
     int intervalRestCount = 0;
     int runningPulseCount = 0; // how many seconds user has been continiusly running
     int age = 26; // users age
@@ -137,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         tabLayout.setupWithViewPager(viewPager);
         Log.d(TAG, "onCreate: ennen radiobuttongroup");
         tvMotivation = (TextView)findViewById(R.id.tvmotiv);
+        toastRest = Toast.makeText(getApplicationContext(), "Burst over, good job!", Toast.LENGTH_LONG);
+        toastBurstStart = Toast.makeText(getApplicationContext(), "Burst started, Go fast!", Toast.LENGTH_LONG);
+        toastWorkHarder = Toast.makeText(getApplicationContext(), "Pick up the pace!", Toast.LENGTH_LONG);
 
 
         gac = new GoogleApiClient.Builder(this)
@@ -384,6 +392,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             msg.what = 1;
             msg.setTarget(uiHandler);
             msg.sendToTarget();
+
+            startTraining();
         }
 
     };
@@ -414,91 +424,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged (Location location){
         Log.d(TAG, "onLocationChanged: ");
         float s = location.getSpeed();
-        int intSpeed = (int) (s*3.6);
+        intSpeed = (int) (s*3.6);
         Log.d(TAG, String.valueOf(intSpeed + "  "+ heartRate));
-
-        if(mainMode == "walk"){
-            Log.d(TAG, "onLocationChanged: main mode on WALK");
-
-            if(intSpeed < 16 && intSpeed > 2){
-                walking = true;
-            }
-            else{
-                walking = false;
-            }
-
-            if(walking){
-                walkingSpeedCount++;
-            }
-            else{
-                walkingSpeedCount = 0;
-            }
-
-
-            if(walking && heartRate < walkingBeat_min && walkingSpeedCount >= 10){
-                tvMotivation.setText("NOPEAMMIN!!");
-                try {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                    r.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else if(!walking){
-                //tvMotivation.setText("et taida kävellä");
-            }
-            else {
-                tvMotivation.setText("Hyvin menee!");
-            }
-
-
-        }
-        else if(mainMode == "interval"){
-            Log.d(TAG, "onLocationChanged: main mode on INTERVAL");
-            
-            if(initialResting){
-                intervalRestCount++;
-                if(intervalRestCount==120){
-                    initialResting = false;
-                    beeb();
-                    intervalRestCount = 0;
-                }
-            }
-
-            else if(!initialResting && !postInitialResting){
-                intervalBurstCount++;
-                if(intervalBurstCount >= burstLenght){
-                    intervalBurstCount = 0;
-                    tvMotivation.setText("BURSTI OHI!!");
-                    beeb();
-                    postInitialResting = true;
-                }
-            }
-            else if(postInitialResting){
-                if(heartRate<= zone1_max){
-                    beeb();
-                    postInitialResting = false;
-                }
-            }
-
-        }
-
-        else if(mainMode == "free"){
-            Log.d(TAG, "onLocationChanged: main mode on FREE");
-            if(heartRate >= runningBeat_min){
-                freeWorkoutActive = true;
-            }
-
-            if(heartRate < runningBeat_min && freeWorkoutActive){
-                tvMotivation.setText("NOPEAMMIN!!");
-                beeb();
-            }
-
-            else if(heartRate >= runningBeat_min){
-                tvMotivation.setText("hyvin menee");
-            }
-        }
     }
 
 
@@ -549,5 +476,88 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+
+    public void startTraining(){
+
+        if(mainMode == "walk"){
+            Log.d(TAG, "onLocationChanged: main mode on WALK");
+
+            if(intSpeed < 16 && intSpeed > 2){
+                walking = true;
+            }
+            else{
+                walking = false;
+            }
+
+            if(walking){
+                walkingSpeedCount++;
+            }
+            else{
+                walkingSpeedCount = 0;
+            }
+
+
+            if(walking && heartRate < 105 && walkingSpeedCount >= startMotivatingAfter){
+                //tvMotivation.setText("NOPEAMMIN!!");
+                beeb();
+                toastWorkHarder.show();
+            }
+            else if(!walking){
+                //tvMotivation.setText("et taida kävellä");
+            }
+            else {
+                //tvMotivation.setText("Hyvin menee!");
+            }
+        }
+
+        else if(mainMode == "interval"){
+            Log.d(TAG, "onLocationChanged: main mode on INTERVAL");
+
+            if(initialResting){
+                intervalRestCount++;
+                if(intervalRestCount==initialRestLength){
+                    initialResting = false;
+                    beeb();
+                    intervalRestCount = 0;
+                    toastBurstStart.show();
+                }
+            }
+
+            else if(!initialResting && !postInitialResting){
+                intervalBurstCount++;
+                if(intervalBurstCount >= burstLenght){
+                    intervalBurstCount = 0;
+                    //tvMotivation.setText("BURSTI OHI!!");
+                    beeb();
+                    postInitialResting = true;
+                    toastRest.show();
+                }
+            }
+            else if(postInitialResting){
+                if(heartRate<= 85){ //tähän zone1_max takasin
+                    beeb();
+                    postInitialResting = false;
+                    toastBurstStart.show();
+                }
+            }
+
+        }
+
+        else if(mainMode == "free"){
+            Log.d(TAG, "onLocationChanged: main mode on FREE");
+            if(heartRate >= 90){ // Tähän runningBeat_min
+                freeWorkoutActive = true;
+            }
+
+            if(heartRate < 90 && freeWorkoutActive){
+                beeb();
+                toastWorkHarder.show();
+            }
+
+            else if(heartRate >= runningBeat_min){
+                //tvMotivation.setText("hyvin menee");
+            }
+        }
+    }
 
 }
