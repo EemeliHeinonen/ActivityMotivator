@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if(heartRate >= runningBeat_min){
                 freeWorkoutActive = true;
             }
-            
+
             if(heartRate < runningBeat_min && freeWorkoutActive){
                 tvMotivation.setText("NOPEAMMIN!!");
                 beeb();

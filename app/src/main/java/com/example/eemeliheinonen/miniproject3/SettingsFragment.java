@@ -1,5 +1,6 @@
 package com.example.eemeliheinonen.miniproject3;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,18 +44,19 @@ public class SettingsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         RelativeLayout myView =(RelativeLayout) inflater.inflate(R.layout.fragment_settings, container, false);
-        tv1 = (TextView) myView.findViewById(R.id.tvFragment);
         editAge = (EditText) myView.findViewById(R.id.etAge);
         editBurst = (EditText) myView.findViewById(R.id.etBurstLength);
-        tv1.setText(dTxt);
 
         editAge.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
+                    if (!(editBurst.getText().toString().equals(""))) {
+
                     //SAVE THE DATA
-                    ((MainActivity)getActivity()).setAge(Integer.parseInt(editAge.getText().toString()));
+                    ((MainActivity) getActivity()).setAge(Integer.parseInt(editAge.getText().toString()));
                 }
+            }
             }
         });
 
@@ -61,9 +64,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                    ((MainActivity)getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
-
+                    if (!(editBurst.getText().toString().equals(""))) {
+                        ((MainActivity) getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
+                    }
+                    InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
                 }
                 return false;
@@ -75,8 +80,10 @@ public class SettingsFragment extends Fragment {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    //SAVE THE DATA
-                    ((MainActivity)getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
+                    if (!(editBurst.getText().toString().equals(""))) {
+                        //SAVE THE DATA
+                        ((MainActivity) getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
+                    }
                 }
             }
         });
