@@ -8,21 +8,28 @@
     <TextView android:id="@+id/tv3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorHeart"
         android:textSize="100dp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:paddingTop="100dp"
-        />
+        android:textColor="@color/colorHeart"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BPM"
+        android:text="bpm"
         android:layout_toRightOf="@id/tv3"
-        android:textSize="50dp"
+        android:textSize="30dp"
         android:textStyle="bold"
+        android:paddingTop="165dp"
         android:textColor="@color/colorHeart"
-        android:paddingTop="150dp"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -34,20 +41,6 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         >
-        <!--
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="Interval workout"
-            style="@style/Font"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="Free workout"
-            style="@style/Font"
-            />
-            -->
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -62,19 +55,32 @@
                 android:text="Frisk walking"
                 android:id="@+id/radioFwalk"
                 style="@style/RadioTextWalk"
-                />
+                android:shadowColor="@color/text_shadow"
+                android:shadowDx="0.5"
+                android:shadowDy="0.5"
+                android:shadowRadius="1"/>
+
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Interval workout"
                 android:id="@+id/radioIw"
-                style="@style/RadioTextInterval"/>
+                style="@style/RadioTextInterval"
+                android:shadowColor="@color/text_shadow"
+                android:shadowDx="0.5"
+                android:shadowDy="0.5"
+                android:shadowRadius="1"/>
+
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Free workout"
                 android:id="@+id/radioFwork"
-                style="@style/RadioTextFree"/>
+                style="@style/RadioTextFree"
+                android:shadowColor="@color/text_shadow"
+                android:shadowDx="0.5"
+                android:shadowDy="0.5"
+                android:shadowRadius="1"/>
 
         </RadioGroup>
 

@@ -8,14 +8,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/age"
-        style="@style/RadioTextWalk"
+        style="@style/SettingsFont"
         android:paddingTop="40dp"/>
 
     <EditText android:id="@+id/etAge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="your age"
+        android:textSize="16sp"
+        android:hint="Your age"
         android:layout_below="@id/tvAge" />
 
     <TextView android:id="@+id/tvBurstDescription"
@@ -23,15 +24,15 @@
         android:layout_height="wrap_content"
         android:text="@string/burst_length"
         android:layout_below="@id/etAge"
-        style="@style/RadioTextWalk"
+        style="@style/SettingsFont"
         android:paddingTop="40dp"/>
 
     <EditText android:id="@+id/etBurstLength"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:textSize="14sp"
-        android:hint="interval burst length in seconds"
+        android:textSize="16sp"
+        android:hint="Interval burst length in seconds"
         android:layout_below="@id/tvBurstDescription" />
 
 </RelativeLayout>

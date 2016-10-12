@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "txt";
-    private String dTxt;
-    private TextView tv1;
     private EditText editAge;
     private EditText editBurst;
 
@@ -38,7 +36,6 @@ public class SettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            dTxt = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -51,12 +48,11 @@ public class SettingsFragment extends Fragment {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!(editBurst.getText().toString().equals(""))) {
-
+                    if (!(editAge.getText().toString().equals("")) && editAge.getText().length() <= 3) {
                     //SAVE THE DATA
                     ((MainActivity) getActivity()).setAge(Integer.parseInt(editAge.getText().toString()));
+                    }
                 }
-            }
             }
         });
 
@@ -64,7 +60,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (!(editBurst.getText().toString().equals(""))) {
+                    if (!(editBurst.getText().toString().equals("")) && editBurst.getText().length() <= 4) {
                         ((MainActivity) getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
                     }
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -80,15 +76,13 @@ public class SettingsFragment extends Fragment {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    if (!(editBurst.getText().toString().equals(""))) {
+                    if (!(editBurst.getText().toString().equals("")) && editBurst.getText().length() <= 4) {
                         //SAVE THE DATA
                         ((MainActivity) getActivity()).setBurstLenght(Integer.parseInt(editBurst.getText().toString()));
                     }
                 }
             }
         });
-
-
         return myView;
     }
 }

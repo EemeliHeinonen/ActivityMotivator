@@ -11,28 +11,32 @@
     </style>
     <style name="Font">
         <item name="android:fontFamily">Roboto Regular</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="SettingsFont">
+        <item name="android:fontFamily">Roboto Regular</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
-
     </style>
 
     <style name="RadioTextWalk">
         <item name="android:fontFamily">Roboto Regular</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorAccent</item>
 
     </style>
     <style name="RadioTextInterval">
         <item name="android:fontFamily">Roboto Regular</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/colorHeart</item>
+        <item name="android:textColor">@color/colorMedium</item>
 
     </style>
     <style name="RadioTextFree">
         <item name="android:fontFamily">Roboto Regular</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-
+        <item name="android:textColor">@color/colorMedium</item>
     </style>
 
 
