@@ -28,17 +28,12 @@ import android.os.Message;
 import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ScanSettings settings;
     private List<ScanFilter> filters;
     private BluetoothGatt mGatt;
-    private String polarinMac = "00:22:D0:32:F6:6A";
     private String polarinUUID = "0000180d-0000-1000-8000-00805f9b34fb";
     private String heartRateUUID = "00002A37-0000-1000-8000-00805F9B34FB";
     private int format = BluetoothGattCharacteristic.FORMAT_UINT8;
@@ -71,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient gac;
     private Location loc;
     private String TAG = "jeee";
-    private TextView tvC;
-    private TextView tvMotivation;
     private LocationRequest locReq;
     private String mainMode = "walk"; // walk or interval or free
     private Toast toastRest;
@@ -80,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Toast toastWorkHarder;
 
 
-
-    String mode; //general mode (walking/training)
     private int intSpeed; //User's speed will be set to this.
     int walkingSpeedCount = 0; // how many seconds of continious walking
     int intervalBurstCount = 0; // how many seconds of continious interval training
@@ -90,19 +80,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     boolean initialResting = true;
     boolean postInitialResting = false;
     boolean freeWorkoutActive = false;
-    boolean interval = false; // toggling interval mode
     boolean walking = false; //toggling walking mode
-    boolean running = false; // toggling free workout mode
     int burstLenght = 30; // user set duration for interval burst
     int intervalRestCount = 0;
-    int runningPulseCount = 0; // how many seconds user has been continiusly running
     int age = 26; // users age
     int maxHr = 220-age; // calculated max HR
     int walkingBeat_min = (int) (0.4* maxHr); // minimum HR for optimal walking
     int runningBeat_min = (int) (0.7*maxHr);
-    int zone1_min = (int) (0.5*maxHr); // min HR for zone1
     int zone1_max = (int) (0.6*maxHr); // max HR for zone1
-    int burstHR_min = (int) (0.85*maxHr); // min HR for burst
 
     private final static int UPDATE_DEVICE = 0;
     private final static int UPDATE_VALUE = 1;
@@ -122,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     };
 
     private void updateDevice(String devName) {
-        //TextView t = (TextView) findViewById(R.id.tv2);
-        //t.setText(devName);
     }
 
     private void updateValue(String value) {
@@ -140,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.fixed_tabs);
         tabLayout.setupWithViewPager(viewPager);
-        Log.d(TAG, "onCreate: ennen radiobuttongroup");
-        tvMotivation = (TextView)findViewById(R.id.tvmotiv);
         toastRest = Toast.makeText(getApplicationContext(), "Burst over, good job!", Toast.LENGTH_LONG);
         toastBurstStart = Toast.makeText(getApplicationContext(), "Burst started, Go fast!", Toast.LENGTH_LONG);
         toastWorkHarder = Toast.makeText(getApplicationContext(), "Pick up the pace!", Toast.LENGTH_LONG);
@@ -231,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     } else {
                         Log.d("lol", "scanledevice stopscan");
                         mLEScanner.stopScan(mScanCallback);
-
                     }
                 }
             }, SCAN_PERIOD);
@@ -258,9 +238,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.i("callbackType lol", String.valueOf(callbackType));
             Log.i("result lol", result.toString());
             BluetoothDevice btDevice = result.getDevice();
-            Log.d("lol", "ennen connectdevice");
             connectToDevice(btDevice);
-            Log.d("lol", "jälkeen connectdevicen");
             Log.d("lol", btDevice.toString());
         }
 
@@ -315,9 +293,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     msg.what = 0;
                     msg.setTarget(uiHandler);
                     msg.sendToTarget();
-
                     gatt.discoverServices();
                     break;
+
                 case BluetoothProfile.STATE_DISCONNECTED:
                     Log.e("gattCallback", "STATE_DISCONNECTED");
                     break;
@@ -331,20 +309,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             List<BluetoothGattService> services = gatt.getServices();
             Log.i("onServicesDiscovered", services.toString());
-           /* for (BluetoothGattService service : services) {
-                List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-                for (BluetoothGattCharacteristic characteristic : characteristics){
-                    Log.d("lol",characteristic.getIntValue(-1, 1).toString());
-                }
-            }*/
+
             for (BluetoothGattService service : services) {
                 Log.d("lollero", "for ennen if");
                 if (service.getUuid().toString().equals(polarinUUID)) {
                     Log.d("lollero", "uuid equald polarinuuid");
                     // Found heart rate service
-                    //  gatt.readCharacteristic(service.getCharacteristic());
                     Log.d("tässä tulee hruuid", UUID.fromString(heartRateUUID).toString());
-                    //gatt.readCharacteristic(service.getCharacteristic(UUID.fromString(heartRateUUID)));
                     Log.d("lollero size", "" + service.getCharacteristics().size());
                     gatt.readCharacteristic(service.getCharacteristics().get(0));
                     characteristic = service.getCharacteristics().get(0);
@@ -356,12 +327,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     break;
                 }
             }
-
-
-            //gatt.readCharacteristic(services.get(5).getCharacteristics().get(0));
-
-            // Log.d("lollero 1", gatt.readCharacteristic(services.get(3).getCharacteristics());
-            //Log.d("lol",services.get(3).getCharacteristics().get(0).getIntValue(-1, 1).toString());
         }
 
 
@@ -370,17 +335,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                          BluetoothGattCharacteristic
                                                  characteristic, int status) {
             Log.d("onCharacteristicRead", characteristic.toString());
-            //Log.d("lol getintvalue",characteristic.getIntValue(-1,1).toString());
-            Log.d("lollero", characteristic.getUuid().toString());
-
             heartRate = characteristic.getIntValue(format, 1);
             Log.d("lollero", String.format("Received heart rate: %d", heartRate));
-
             gatt.disconnect();
         }
 
         @Override
-// Characteristic notification
+        // Characteristic notification
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             heartRate = characteristic.getIntValue(format, 1);
             String hr = "" + heartRate;
@@ -406,8 +367,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         loc = LocationServices.FusedLocationApi.getLastLocation(gac);
         loc.getSpeed();
-        //tvC = (TextView) findViewById(R.id.tvCoordinates);
-        //tvC.setText("Latitude: " + loc.getLatitude() + "\nLongitude: " + loc.getLongitude() + "\nAccuracy: " + loc.getAccuracy());
         startLocationUpdates();
     }
 
@@ -417,7 +376,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 gac, locReq, this);
     }
-
 
 
     @Override
@@ -431,7 +389,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
@@ -496,17 +453,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 walkingSpeedCount = 0;
             }
 
-
-            if(walking && heartRate < 105 && walkingSpeedCount >= startMotivatingAfter){
-                //tvMotivation.setText("NOPEAMMIN!!");
+            if(walking && heartRate < walkingBeat_min && walkingSpeedCount >= startMotivatingAfter){
                 beeb();
                 toastWorkHarder.show();
             }
             else if(!walking){
-                //tvMotivation.setText("et taida kävellä");
             }
             else {
-                //tvMotivation.setText("Hyvin menee!");
+
             }
         }
 
@@ -527,14 +481,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 intervalBurstCount++;
                 if(intervalBurstCount >= burstLenght){
                     intervalBurstCount = 0;
-                    //tvMotivation.setText("BURSTI OHI!!");
                     beeb();
                     postInitialResting = true;
                     toastRest.show();
                 }
             }
             else if(postInitialResting){
-                if(heartRate<= 85){ //tähän zone1_max takasin
+                if(heartRate<= zone1_max){
                     beeb();
                     postInitialResting = false;
                     toastBurstStart.show();
