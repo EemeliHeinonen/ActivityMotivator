@@ -6,9 +6,9 @@ This README would normally document whatever steps are necessary to get your app
 
 External sensor selection & ideas
 
-*1st try - Minimal user interaction life tracker (R.I.P Angel sensor)
-*2nd - Heart rate monitor with Metawear
-*3rd - Activity Motivator with Polar H6 heart rate monitor
+1st try - Minimal user interaction life tracker (R.I.P Angel sensor)
+2nd - Heart rate monitor with Metawear
+3rd - Activity Motivator with Polar H6 heart rate monitor
 
 
 ### How do I get set up? ###
