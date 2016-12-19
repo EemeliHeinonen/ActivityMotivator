@@ -15,14 +15,8 @@ Helps you manage your interval workout
 Ensures you won’t slack off during a workout
 
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Installation ###
+Clone the master branch and open on Android Studio.
 
 ### Contribution guidelines ###
 
@@ -30,7 +24,6 @@ Ensures you won’t slack off during a workout
 * Code review
 * Other guidelines
 
-### Who do I talk to? ###
+### License ###
 
-* Repo owner or admin
-* Other community or team contact
+Created by Eemeli Heinonen and Mortti Aittokoski
