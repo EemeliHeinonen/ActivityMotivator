@@ -3,9 +3,7 @@
 ### Project idea & summary ###
 
 
-Activity Motivator with Polar H6 heart rate monitor
-
-#### Activity Motivator ####
+#### Activity Motivator #### with Polar H6 heart rate monitor
 Uses any BLE Heart rate monitor
 
 Notifies you when you are walking too lazily
