@@ -1,14 +1,18 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### Project idea & summary ###
 
-External sensor selection & ideas
 
-1st try - Minimal user interaction life tracker (R.I.P Angel sensor)
-2nd - Heart rate monitor with Metawear
-3rd - Activity Motivator with Polar H6 heart rate monitor
+Activity Motivator with Polar H6 heart rate monitor
+
+#### Activity Motivator ####
+Uses any BLE Heart rate monitor
+
+Notifies you when you are walking too lazily
+
+Helps you manage your interval workout
+
+Ensures you won’t slack off during a workout
 
 
 ### How do I get set up? ###
