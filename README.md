@@ -2,11 +2,15 @@
 
 This README would normally document whatever steps are necessary to get your application up and running.
 
-### What is this repository for? ###
+### Project idea & summary ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+External sensor selection
+ & ideas
+
+1st try - Minimal user interaction life tracker (R.I.P Angel sensor)
+2nd - Heart rate monitor with Metawear
+3rd - Activity Motivator with Polar H6 heart rate monitor
+
 
 ### How do I get set up? ###
 
