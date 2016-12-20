@@ -2,6 +2,8 @@
 
 ### Project idea & summary ###
 
+An android application which helps you stay active during your workout or walking trips by monitoring your heart rate.
+
 
 #### Activity Motivator with Polar H6 heart rate monitor
 Uses any BLE Heart rate monitor
@@ -20,11 +22,11 @@ Ensures you won’t slack off during a workout
 
 ### Functionality ###
 
-Walking: If you’re walking and your heart rate is under X bpm -> Motivator Chime
+Walking: If you’re walking and your heart rate is under X bpm -> motivating chime
 
-Interval workout: Motivator Chimes to indicate the starts and ends of interval Bursts
+Interval workout: Plays chime sounds to indicate the starts and ends of interval Bursts
 
-Free workout: Once your heart rate rises over X, You’ll get a Motivator Chime if your heart rate drops under Y.
+Free workout: Once your heart rate rises over X, You’ll get a motivating chime if your heart rate drops under Y.
 
 ### Design ###
 
