@@ -14,9 +14,9 @@ Ensures you won’t slack off during a workout
 
 ### Features ###
 
-Bluetooth LE is used to get heart rate signal from a wearable monitor
-Uses Google Api Client’s GPS to get your speed outdoors
-Plays Motivation Chimes ™ according to your selected mode to help you stay active.
+* Bluetooth LE is used to get heart rate signal from a wearable monitor
+* Uses Google Api Client’s GPS to get your speed outdoors
+* Plays Motivation Chimes ™ according to your selected mode to help you stay active.
 
 ### Functionality ###
 
